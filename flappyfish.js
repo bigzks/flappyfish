@@ -44,39 +44,48 @@ function generateBarrier() {
     barriers.appendChild(botBarrier);
 }
 
-let diving = false;
 // animate and control
-function animate() {
-    
+let diving = false;
+function animate() {    
     const fish = window.document.getElementById("fish");
     const topBarrier = window.document.getElementsByClassName("topBarrier");
     const botBarrier = window.document.getElementsByClassName("botBarrier");
-    var speed = 5;
-    var fishPos;
-    
+    const speed = 5;
+    let fishPos;
+
     // fish animate
     fishPos = parseInt((window.getComputedStyle(fish).getPropertyValue("top")).slice(0, -2));
     fishFloat = fishPos - speed;
 
-    window.onkeypress = e => diving = true;
+    window.onkeypress = e => {
+        const jumpSound = new Audio("/sounds/jump.mp3");
+        jumpSound.addEventListener("canplay", jumpSound.play);
 
+        diving = true;
+    }
+
+    // onkeypress
     if (diving == true){
         const dive = window.setInterval(function(){
             fishFloat = fishFloat + 10;
             fish.style.top = (fishFloat + "px");
         }, 10)
         setTimeout( () => {
-            clearInterval(dive)
-            diving = false    
-        }, 60)
+            clearInterval(dive);
+            diving = false;
+        }, 60);
     }
+    // animation without interruption
     else {
         fish.style.top = (fishFloat + "px");
     }
 
-    for (let i = 0; topBarrier.length; i++){
+
+    for (let i = 0; i < topBarrier.length; i++){
+        const leftLimit = -110; 
+
         // animate top barrier
-        topBarrierPos = parseInt((window.getComputedStyle(topBarrier[i]).getPropertyValue("left")).slice(0, -2));
+        topBarrierPos = parseInt(window.getComputedStyle(botBarrier[i]).left.slice(0, -2));
         topBarrierMove = topBarrierPos - speed;
         topBarrier[i].style.left = (topBarrierMove + "px");
 
@@ -86,10 +95,19 @@ function animate() {
         botBarrierMove = botBarrierPos - speed;
         botBarrier[i].style.left = (botBarrierMove + "px");
 
-        // delete bot and top barrier
-        if (topBarrierPos <= -110){
+        
+        if (topBarrierPos <= leftLimit){
+            // delete bot and top barrier
             document.getElementById('barriers').removeChild(botBarrier[i]);
-            document.getElementById('barriers').removeChild(topBarrier[i]);
+            document.getElementById('barriers').removeChild(topBarrier[i])
+            
+            // extra left move to make sure it's not gonna stutter
+            topBarrierPos = parseInt(window.getComputedStyle(topBarrier[0]).left.slice(0, -2));
+            topBarrierMove = topBarrierPos - speed;
+            topBarrier[0].style.left = (topBarrierMove + "px"); 
+            botBarrierPos = parseInt((window.getComputedStyle(botBarrier[0]).getPropertyValue("left")).slice(0, -2));
+            botBarrierMove = botBarrierPos - speed;
+            botBarrier[0].style.left = (botBarrierMove + "px");
         }
     }
 }
@@ -99,24 +117,24 @@ function colision(){
     const botBarrier = document.getElementsByClassName("botBarrier");
     const fish = window.document.getElementById("fish");
 
-    var topBarrierTopPos = parseInt(window.getComputedStyle(topBarrier[0]).top.slice(0, -2));
-    var topBarrierLeftPos = parseInt(window.getComputedStyle(topBarrier[0]).left.slice(0, -2));
+    let topBarrierTopPos = parseInt(window.getComputedStyle(topBarrier[0]).top.slice(0, -2));
+    let topBarrierLeftPos = parseInt(window.getComputedStyle(topBarrier[0]).left.slice(0, -2));
+    let topBarrierHeight = parseInt(window.getComputedStyle(topBarrier[0]).height.slice(0, -2));
+
+    let botBarrierBotPos = parseInt(window.getComputedStyle(botBarrier[0]).bottom.slice(0, -2));
+    let botBarrierLeftPos = parseInt(window.getComputedStyle(botBarrier[0]).left.slice(0, -2));
+    let botBarrierHeight = parseInt(window.getComputedStyle(botBarrier[0]).height.slice(0, -2));
     
-
-    var botBarrierBotPos = parseInt(window.getComputedStyle(botBarrier[0]).bottom.slice(0, -2));
-    var botBarrierLeftPos = parseInt(window.getComputedStyle(botBarrier[0]).left.slice(0, -2));
-
-    var topBarrierHeight = parseInt(window.getComputedStyle(topBarrier[0]).height.slice(0, -2));
-    var botBarrierHeight = parseInt(window.getComputedStyle(botBarrier[0]).height.slice(0, -2));
+    
     const barrierWidth = 136;
     const fishWidth = 101;
     const fishHeight = 76;
 
-    var fishLeftPos = parseInt(window.getComputedStyle(fish).left.slice(0, -2));
-    var fishTopPos = parseInt(window.getComputedStyle(fish).top.slice(0, -2));
-    var fishBotPos = parseInt(window.getComputedStyle(fish).bottom.slice(0, -2));
+    let fishLeftPos = parseInt(window.getComputedStyle(fish).left.slice(0, -2));
+    let fishTopPos = parseInt(window.getComputedStyle(fish).top.slice(0, -2));
+    let fishBotPos = parseInt(window.getComputedStyle(fish).bottom.slice(0, -2));
 
-    // checking colisiont with the floor and the ceiling
+    // checking colision with the floor and the ceiling
     if ((fishBotPos <= 0) || (fishTopPos <= 0)){
         return 2;
     }
@@ -154,17 +172,13 @@ function game(){
     if ((tick % 100) == 0){
         generateBarrier();
     }
-    tick += 1;
-
-    // an inexistant error was being spammed, so ill let this try catch statement till i came up with smt
-    try{
-        animate();
-    }
-    catch{}
+    
+    animate();
 
     // gameover
     if (colision() == 2){
         clearInterval(timer);
+        window.location.reload(false);
     }
     // gamepoint
     else if (colision() == 1){
@@ -172,6 +186,8 @@ function game(){
             progress();
         }
     }
+    
+    tick += 1;
 }
 
 // game loop
