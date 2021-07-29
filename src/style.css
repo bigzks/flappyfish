@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'pixel';
-    src: url('/fonts/04b_30__-webfont.woff2') format('woff2'),
-         url('/fonts/04b_30__-webfont.woff') format('woff');
+    src: url('/misc/fonts/pixel/04b_30__-webfont.woff2') format('woff2'),
+         url('/misc/fonts/pixel/04b_30__-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 

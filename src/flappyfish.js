@@ -58,7 +58,7 @@ function animate() {
     fishFloat = fishPos - speed;
 
     window.onkeypress = e => {
-        const jumpSound = new Audio("/sounds/jump.mp3");
+        const jumpSound = new Audio("/misc/sounds/jump.mp3");
         jumpSound.addEventListener("canplay", jumpSound.play);
 
         diving = true;
@@ -128,7 +128,6 @@ function colision(){
     
     const barrierWidth = 136;
     const fishWidth = 101;
-    const fishHeight = 76;
 
     let fishLeftPos = parseInt(window.getComputedStyle(fish).left.slice(0, -2));
     let fishTopPos = parseInt(window.getComputedStyle(fish).top.slice(0, -2));
@@ -164,29 +163,44 @@ function progress(){
     const spanProgress = document.getElementById('points');
     var progress = parseInt(spanProgress.innerText);
     spanProgress.innerText = (progress + 1);
+
+    const successSound = new Audio("/misc/sounds/success.mp3");
+    successSound.addEventListener("canplay", successSound.play);
 }
 
 function game(){
-    const progressText = parseInt(document.getElementById('points'));
-
     if ((tick % 100) == 0){
         generateBarrier();
     }
     
     animate();
 
-    // gameover
-    if (colision() == 2){
-        clearInterval(timer);
-        window.location.reload(false);
+    switch(colision()){
+        case 1: // gamepoint
+            if (((tick % 50) == 0) && (tick > 200)){
+                progress();
+            }
+            break;
+
+        case 2: // gameover
+            // const pointsSpan = document.getElementById("points");
+            // const score = Number(pointsSpan.innerText);
+
+            clearInterval(timer);
+
+            // highscore
+            // if (localStorage.highscore){
+            //    if (localStorage.highscore < score){
+            //        localStorage.highscore = score;
+            //    }
+            // } 
+            // else{
+            //    localStorage.highscore = score;
+            // }
+            // window.location.reload(false);
+            // console.log(localStorage.highscore);
+            // break;      
     }
-    // gamepoint
-    else if (colision() == 1){
-        if (((tick % 50) == 0) && (tick > 200)){
-            progress();
-        }
-    }
-    
     tick += 1;
 }
 
