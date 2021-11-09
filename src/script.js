@@ -50,7 +50,7 @@ function animate() {
     const fish = window.document.getElementById("fish");
     const topBarrier = window.document.getElementsByClassName("topBarrier");
     const botBarrier = window.document.getElementsByClassName("botBarrier");
-    const speed = 5;
+    const speed = 7;
     let fishPos;
 
     // fish animate
@@ -169,7 +169,7 @@ function progress(){
 }
 
 function game(){
-    if ((tick % 100) == 0){
+    if ((tick % 50) == 0){
         generateBarrier();
     }
     
@@ -177,29 +177,46 @@ function game(){
 
     switch(colision()){
         case 1: // gamepoint
-            if (((tick % 50) == 0) && (tick > 200)){
+            if (((tick % 25) == 0) && (tick > 200)){
                 progress();
             }
             break;
 
         case 2: // gameover
-            // const pointsSpan = document.getElementById("points");
-            // const score = Number(pointsSpan.innerText);
+            const pointsSpan = document.getElementById("points");
+            const score = Number(pointsSpan.innerText);
 
             clearInterval(timer);
 
             // highscore
-            // if (localStorage.highscore){
-            //    if (localStorage.highscore < score){
-            //        localStorage.highscore = score;
-            //    }
-            // } 
-            // else{
-            //    localStorage.highscore = score;
-            // }
+            if (localStorage.highscore){ // if localStorage.highscore exists
+               if (localStorage.highscore < score){
+                   localStorage.highscore = score;
+               }
+            } 
+            else{
+               localStorage.highscore = score;
+            }
             // window.location.reload(false);
-            // console.log(localStorage.highscore);
-            // break;      
+            console.log(localStorage.highscore);
+            let html = document.createElement('div');
+            html.id = ("highscore");
+            html.innerText = (`Your score: ${score}\n Your highscore: ${localStorage.highscore}`);
+
+            document.body.appendChild(html)
+
+            let css = 'div#highscore{background-color: rgb(35, 153, 231); width: 200px; height: 90px; position: absolute; right: 600px; top: 27%;padding: 90px;text-align: center;border-radius: 12px;font: 28px normal Arial;',
+            style = document.createElement('style');
+    
+            document.head.appendChild(style);
+    
+            style.type = 'text/css';
+            if (style.styleSheet){
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+            break;      
     }
     tick += 1;
 }

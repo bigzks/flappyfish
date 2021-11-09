@@ -1,10 +1,9 @@
 @font-face {
-    font-family: 'pixel';
-    src: url('/misc/fonts/pixel/04b_30__-webfont.woff2') format('woff2'),
-         url('/misc/fonts/pixel/04b_30__-webfont.woff') format('woff');
+    font-family: 'Pixel';
+    src: url('misc/fonts/pixel/04b_30__-webfont.woff2') format('woff2'),
+         url('misc/fonts/pixel/04b_30__-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
 
 body{
@@ -23,7 +22,6 @@ span#points{
     top: 20px;
     
     z-index: 2;
-
 }
 img#fish{
     position: fixed;
